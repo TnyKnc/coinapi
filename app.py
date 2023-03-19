@@ -32,4 +32,4 @@ def getcoinlist():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5001)
+    app.run(host="100.25.192.75", port=5001)
