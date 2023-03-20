@@ -1,9 +1,6 @@
 import requests
 import json
-import time
-import time
 import random
-import locale
 
 
 def get_tokens():
@@ -18,9 +15,10 @@ def get_tokens():
             sy = ""
             if i['trend'] == "up":
                 sy = "+"
-            
+
             if i['symbol'] in ["BTC", "ETH", "BNB", "SOL", "AVAX"]:
-                priceo = requests.get(f"https://api.binance.com/api/v3/ticker/price?symbol={i['symbol']}USDT").json()['price']
+                priceo = requests.get(f"https://api.binance.com/api/v3/ticker/price?symbol={i['symbol']}USDT").json()[
+                    'price']
                 added.append(i['symbol'])
                 coins.append((float(i['vol_b'].replace(",", "")) * float(i['rate'].replace(",", "")), {
                     "name": i['name'],
@@ -28,7 +26,7 @@ def get_tokens():
                     "price": str('{:,.2f}'.format(float(f"{float(priceo):.2f}"))),
                     "volume": str('{:,.2f}'.format(int(float(i["vol_b"].replace(",", ""))))),
                     "24hchange": sy + i['rate_percent'],
-                    
+
                 }))
             else:
 
@@ -36,12 +34,13 @@ def get_tokens():
                 coins.append((float(i['vol_b'].replace(",", "")) * float(i['rate'].replace(",", "")), {
                     "name": i['name'],
                     "symbol": i['symbol'],
-                    "price": str('{:,.2f}'.format(int(float(f'{float(i["rate"].replace(",", "")) * random.uniform(0.9997, 1.0003):.2f}')))),
+                    "price": str('{:,.2f}'.format(
+                        int(float(f'{float(i["rate"].replace(",", "")) * random.uniform(0.9997, 1.0003):.2f}')))),
                     "volume": str('{:,.2f}'.format(int(float(i["vol_b"].replace(",", ""))))),
                     "24hchange": sy + i['rate_percent'],
-                    
+
                 }))
-    
+
     r = requests.get("https://www.mexc.com/open/api/v2/market/ticker").json()
 
     for i in r['data']:
@@ -59,41 +58,27 @@ def get_tokens():
             except KeyError:
                 pass
 
-    
-
-
     return coins
-
 
 
 def sort_them(mylist: list) -> list:
     for i in range(len(mylist)):
         i = 0
-        while i < len(mylist)-1:
-            if mylist[i][0] > mylist[i+1][0]:
+        while i < len(mylist) - 1:
+            if mylist[i][0] > mylist[i + 1][0]:
                 x = mylist[i]
-                mylist[i] = mylist[i+1]
-                mylist[i+1] = x
+                mylist[i] = mylist[i + 1]
+                mylist[i + 1] = x
             i += 1
-    
+
     mylist.reverse()
     return mylist
 
 
-
-
 def checkerr():
-    while True:
-        coins = [i[1] for i in sort_them(get_tokens())]
+    coins = [i[1] for i in sort_them(get_tokens())]
 
-        json.dump(coins, open("pairs/data.json", "w", encoding="utf-8"))
+    json.dump(coins, open("pairs/data.json", "w", encoding="utf-8"))
 
-
-while True:
-    try:
-        checkerr()
-    except Exception as e:
-        print(e)
-        pass
 
 """ checkerr() """
