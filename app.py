@@ -1,6 +1,6 @@
-from flask import Flask, request
+from flask import Flask, jsonify, request
+import json
 
-from modules.aggregator import *
 
 app = Flask(__name__)
 
@@ -9,19 +9,17 @@ app = Flask(__name__)
 def getcoins():
     coins = [[]]
     coins[0] = json.load(open("pairs/data.json", "r", encoding="utf-8"))[
-               int(request.args.get("start", 0)):int(request.args.get("stop", 20000))
-               ]
+        int(request.args.get("start", 0)):int(request.args.get("stop", 20000))
+    ]
     total = [{"total": len(coins[0])}]
     coins.append((total))
     return coins
-
 
 @app.route("/getcoin")
 def getcoin():
     coins = json.load(open("pairs/data.json", "r", encoding="utf-8"))
     coinDetail = [coin for coin in coins if coin['symbol'] == request.args.get("symbol").upper()]
     return json.dumps(coinDetail)
-
 
 @app.route("/getcoinlist")
 def getcoinlist():
@@ -31,12 +29,6 @@ def getcoinlist():
     for _coin in _coins:
         coinDetail.append([coin for coin in coins if coin['symbol'] == _coin.upper()])
     return json.dumps(coinDetail)
-
-
-@app.route("/fetchcoins")
-def fetchcoins():
-    checkerr()
-    return json.dumps()
 
 
 if __name__ == "__main__":
